@@ -96,6 +96,9 @@ const Days: React.FC<DaysProps> = (props: DaysProps) => {
                 <div className="event-detail" style={{backgroundImage: `url(/assets/${event.imageFilenameFull}.webp)`}}>
                     <h2>{event.title}</h2>
                     <p>{event.summary}</p>
+                    <p className='available'>
+                        <b>Available {new Date(event.launchDate).toLocaleDateString('en-US', {day:'2-digit', month: 'long', year: 'numeric'})}</b>
+                        </p>
                     <a className={'btn btn-primary'} href={event.learnMoreLink} target={'_blank'}>Learn More</a>
                     <a className={'btn btn-secondary'} href={event.purchaseLink} target={'_blank'}>Purchase</a>
                 </div>
