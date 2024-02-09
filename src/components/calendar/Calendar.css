@@ -8,7 +8,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin: auto 1em 1em 1em;
+    border-bottom: 1px solid #7f7f7f;
 }
 
 .arrows {
@@ -61,8 +62,8 @@
 
 .days .day {
     display: grid;
-    width: 10vw;
-    height: 10vw;
+    width: 11vw;
+    height: 11vw;
     border: none;
     text-align: right;
     box-shadow: 2px 2px 7px #d5d5d5cc;
@@ -97,10 +98,10 @@
     padding-top: 5px;
 }
 
-.day.today {
+/*.day.today {
     box-shadow: 0 0 0 2px #fc7c00;
     cursor: pointer;
-}
+}*/
 
 .day.other-month {
     background-color: #f4f4f4;
@@ -125,4 +126,87 @@
 .day > .events > .event.has-event > .day-number {
     background-color: #1e5ddb;
     color: white;
+}
+
+
+@media only screen and (min-width: 2000px) {
+    .days {
+        gap: 10px;
+    }
+
+    .days .day {
+        width: 10vw;
+        height: 10vw;
+    }
+}
+
+@media only screen and (min-width: 1440px) {
+}
+
+@media only screen and (min-width: 960px) {
+    .days {
+        gap: 5px;
+    }
+
+    .days .day {
+        width: 11vw;
+        height: 11vw;
+    }
+
+    .event-detail {
+        padding: 2em;
+        margin: 15px auto;
+    }
+}
+
+@media only screen and (max-device-width: 768px) {
+    .days {
+        gap: 3px;
+    }
+
+    .days .day {
+        width: 13vw;
+        height: 13vw;
+        overflow-y: hidden;
+    }
+
+    .day-number {
+        width: 15px;
+        height: 15px;
+        margin: 5px;
+        padding-top: 3px;
+        font-size: 10px;
+        font-weight: 100;
+    }
+
+    .event-detail {
+        padding: 1em;
+        height: 230px;
+    }
+}
+
+@media only screen and (max-device-width: 480px) {
+    .days {
+        gap: 1px;
+    }
+
+    .days .day {
+        width: 12vw;
+        height: 14vw;
+        overflow-y: hidden;
+    }
+
+    .day-number {
+        width: 15px;
+        height: 15px;
+        margin: 5px;
+        padding-top: 3px;
+        font-size: 10px;
+        font-weight: 100;
+    }
+
+    .event-detail {
+        padding: 15px;
+        height: 250px;
+    }
 }

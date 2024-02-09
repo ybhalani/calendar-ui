@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import './Days.css';
+import React, {useEffect, useState} from 'react';
 import {DaysProps, Event} from "../../types/types";
 
 const Days: React.FC<DaysProps> = (props: DaysProps) => {
@@ -50,7 +49,11 @@ const Days: React.FC<DaysProps> = (props: DaysProps) => {
         }
     });
 
-    const handleDayClick = (event: Event, weekIndex: number | string) => {
+    const handleDayClick = (event: Event, weekIndex: number | string, id: number | string) => {
+        if (selectedEvent && selectedEvent.event.id === id){
+            setSelectedEvent(null);
+            return;
+        }
         if (event) {
             setSelectedWeekIndex(weekIndex);
             setSelectedEvent({weekIndex, event});
@@ -60,19 +63,15 @@ const Days: React.FC<DaysProps> = (props: DaysProps) => {
         }
     };
 
-    const handleCloseDetail = () => {
-        setSelectedEvent(null);
-    };
-
     const renderEventsForDay = (eventsForDay: Event[], weekIndex: number | string, day: number | string, isCurrentMonth:boolean) => {
         return eventsForDay.map((event, eventIndex) =>
             {
                 return (
                     isCurrentMonth ?
                         <div id={'event-' + weekIndex} key={'event-' + event.id} className="event has-event"
-                             style={{backgroundImage: `url(assets/${event.imageFilenameThumb}.webp)`}}
+                             style={{backgroundImage: `url(/assets/${event.imageFilenameThumb}.webp)`}}
                              onClick={() => {
-                                 handleDayClick(event, weekIndex);
+                                 handleDayClick(event, weekIndex, event.id);
                              }}
                         >
                             {
@@ -94,16 +93,19 @@ const Days: React.FC<DaysProps> = (props: DaysProps) => {
     const renderEvent = (event: Event) => {
         return (
             <div className="event-section">
-                <div className="event-detail" style={{backgroundImage: `url(assets/${event.imageFilenameFull}.webp)`}}>
+                <div className="event-detail" style={{backgroundImage: `url(/assets/${event.imageFilenameFull}.webp)`}}>
                     <h2>{event.title}</h2>
                     <p>{event.summary}</p>
                     <a className={'btn btn-primary'} href={event.learnMoreLink} target={'_blank'}>Learn More</a>
                     <a className={'btn btn-secondary'} href={event.purchaseLink} target={'_blank'}>Purchase</a>
-                    <a className={'btn btn-danger'} onClick={handleCloseDetail}>Close</a>
                 </div>
             </div>
         )
     }
+
+    useEffect(() => {
+        setSelectedEvent(null)
+    }, [props.currentMonth]);
 
     return (
         <React.Fragment>
@@ -111,14 +113,13 @@ const Days: React.FC<DaysProps> = (props: DaysProps) => {
                 weeks.map((w, weekIndex) => {
                     return (
                         <React.Fragment key={'week-' + weekIndex}>
-                            {
-                                selectedWeekIndex === weekIndex && selectedEvent && renderEvent(selectedEvent.event)
-                            }
                             <div className="days">
                                 {w.map((day: { day: number; month: string; }, index: number) => {
                                     const eventsForDay = props.events.filter((event) => {
                                         const eventDate = new Date(event.launchDate);
-                                        return eventDate.getDate() === day.day && eventDate.getMonth() === props.currentMonth.getMonth();
+                                        return eventDate.getDate() === day.day
+                                            && eventDate.getMonth() === props.currentMonth.getMonth()
+                                            && eventDate.getFullYear() === props.currentMonth.getFullYear();
                                     });
                                     return (
                                         <div key={'day-' + index} data-testid="day"
@@ -137,6 +138,9 @@ const Days: React.FC<DaysProps> = (props: DaysProps) => {
                                 })
                                 }
                             </div>
+                            {
+                                selectedWeekIndex === weekIndex && selectedEvent && renderEvent(selectedEvent.event)
+                            }
                         </React.Fragment>
                     )
                 })

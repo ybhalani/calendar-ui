@@ -1,32 +1,40 @@
 import React from 'react';
-import { render, act, getByTestId } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import Calendar from './Calendar';
-import { Event } from "../../types/types";
 
 let fetchMock: any = undefined;
 
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => jest.fn,
+    useParams: () => ({ year: '2024', month: '02' }),
+}));
+
+jest.mock('../days/Days', () => {
+    return function Days() {
+        return (<><div className="days"></div></>);
+    };
+});
+
 beforeEach(() => {
     return fetchMock = jest.spyOn(global, "fetch")
-        .mockImplementation(() => Promise.resolve(new Response(JSON.stringify([]))));
+        .mockImplementation(() => Promise.resolve(new Response(JSON.stringify({ events: [] }))));
 });
 
 afterEach(() => {
     jest.restoreAllMocks();
 });
 
-it('renders without crashing', async () => {
-    await act(async () => {
-        render(<Calendar />);
-    });
+it('renders without crashing', () => {
+    const { getByText } = render(<Calendar />);
+    const currentMonth = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    expect(getByText(currentMonth)).toBeInTheDocument();
 });
 
-it('calls fetch on mount', async () => {
-    await act(async () => {
-        render(<Calendar />);
-    });
-
+it('calls fetch on mount', () => {
+    render(<Calendar />);
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/events');
+    expect(global.fetch).toHaveBeenCalledWith('https://amock.io/api/yashbhalani/events');
 });
 
 it('displays the current month and year', async () => {

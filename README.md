@@ -7,14 +7,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
-### Start JSON Server
-#### `npm run server`
-
-```
-Please note that you will need to start json server to get events data.
-After that run next script.
-```
-
 ### Start Application
 #### `npm start`
 
