@@ -6,8 +6,18 @@ import Days from "../days/Days";
 import {Event} from "../../types/types";
 import {useNavigate, useParams} from "react-router-dom";
 
+/**
+ * Calendar component
+ * The component dynamically fetches events from an API.
+ * It handles navigation between months, updating the URL and re-rendering the calendar.
+ * It adapts the display of weekdays based on window width.
+ * It validates year and month parameters from the URL, redirecting to the current date if invalid.
+ * It relies on the Days component to render the individual days and events.
+ * */
 const Calendar = () => {
+    // useNavigate: Used for programmatic navigation within the application.
     const navigate = useNavigate();
+    // useParams: Extracts the year and month from the URL parameters.
     const searchParams = useParams();
     const [year, setYear] = useState<number>(Number(searchParams.year));
     const [month, setMonth] = useState<number>(Number(searchParams.month));
@@ -27,6 +37,7 @@ const Calendar = () => {
     }, [window.innerWidth]);
 
     // Get year and month from parameters
+    // The component extracts year and month from URL parameters, validates them, and redirects to the current date if invalid.
     useEffect(() => {
         const initialYear = searchParams.year;
         const initialMonth = Number(searchParams.month);
@@ -53,6 +64,7 @@ const Calendar = () => {
         }
     }, [searchParams]);
 
+    // This useEffect fetches event data from an API and stores it in the events state.
     useEffect(() => {
         fetch('https://amock.io/api/yashbhalani/events')
             .then(async response => await response.json()
@@ -64,6 +76,7 @@ const Calendar = () => {
             .catch((e) => console.log('API failed to fetch event data', e));
     }, []);
 
+    // logic to move to the next month
     const forward = () => {
         const y = currentMonth.getFullYear();
         const m = currentMonth.getMonth();
@@ -76,6 +89,7 @@ const Calendar = () => {
         }
     }
 
+    // logic to move to the previous month
     const backward = () => {
         const y = currentMonth.getFullYear();
         const m = currentMonth.getMonth();
@@ -90,12 +104,15 @@ const Calendar = () => {
 
     return (
         <div className="calendar" data-testid={'calendar-component'}>
+            {/* Header with navigation arrows and month/year display */}
             <div className="header">
                 <span className={'arrows'} data-testid={'arrow-left'} onClick={() => backward()}><FontAwesomeIcon icon={faArrowLeft}/></span>
                 <h1>{currentMonth.toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</h1>
                 <span className={'arrows'} data-testid={'arrow-right'} onClick={() => forward()}><FontAwesomeIcon icon={faArrowRight}/></span>
             </div>
+            {/* Render weekdays */}
             <div className="days week-days">{weekDays.map((day, i) => <div key={'week-days-'+ i} className="day">{day}</div>)}</div>
+            {/* Render days of the month with events */}
             <Days currentMonth={currentMonth} events={events} />
         </div>
     );
